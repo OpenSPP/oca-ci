@@ -1,5 +1,9 @@
 # Container image to run OCA CI tests
 
+⚠️ This fork of the oca-ci repository contains OpenSPP-specific adjustments in
+order to run the GH Actions of repository openspp-modules. This fork must
+not be pushed upstreams to OCA. ⚠️
+
 ⚠️ These images are meant for running CI tests of the Odoo Community
 Association. They are *not* intended for any other purpose, and in particular
 they are not fit for running Odoo in production. If you decide to base your own
