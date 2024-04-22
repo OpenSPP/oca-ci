@@ -45,12 +45,19 @@ def _addons_in_test_requirements(addons_dir):
     test_requirements_path = addons_dir / "test-requirements.txt"
     if not test_requirements_path.exists():
         return set()
+    url_subdir_regex = re.compile(r"git\+https.*subdirectory=(?P<addon_name>[a-zA-Z0-9_-]+)")
     url_addon_regex = re.compile(r"^odoo\d*-addon-(?P<addon_name>[a-zA-Z0-9_-]+) *@")
+
     res = set()
     for line in test_requirements_path.read_text().splitlines():
-        match = url_addon_regex.match(line)
-        if match:
-            res.add(match.group("addon_name").replace("-", "_"))
+        match_subdir = url_subdir_regex.match(line)
+        match_addon = url_addon_regex.match(line)
+
+        if match_subdir:
+            res.add(match_subdir.group("addon_name").replace("-", "_"))
+        elif match_addon:
+            res.add(match_addon.group("addon_name").replace("-", "_"))
+
     return res
 
 
@@ -64,6 +71,7 @@ args = parser.parse_args()
 
 addons_dir = Path(os.getenv("ADDONS_DIR", "."))
 addons_to_skip = _addons_in_test_requirements(addons_dir)
+
 for addon_name in _list_addons_to_test():
     if addon_name in addons_to_skip:
         continue
